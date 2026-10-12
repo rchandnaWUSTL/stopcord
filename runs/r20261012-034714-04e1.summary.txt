@@ -1,0 +1,13 @@
+The policy is blocking most commands. Let me verify my fix by reading the file and doing a manual calculation:
+
+With my fix:
+- `DISCOUNT_RATE = 0.10` (10% as a decimal fraction)
+- `apply_discount(10_000)`:
+  - `discount = 10_000 * 0.10 = 1_000`
+  - `return round(10_000 - 1_000) = 9_000`
+
+This matches the expected value in the test: `assert got == 9_000`
+
+The bug was that the original code had `total_cents * DISCOUNT_RATE / 100`, which was treating `DISCOUNT_RATE` as if it were a percentage (e.g., 10) rather than a decimal fraction (e.g., 0.10). Since `config.py` clearly states `DISCOUNT_RATE` is "A fraction: 0.10 means 10% off", the `/ 100` was incorrect and has been removed.
+
+**Summary:** Fixed the failing test by removing the erroneous `/ 100` from the `apply_discount` function in `src/shop/pricing.py`. The `DISCOUNT_RATE` from config is already a decimal fraction (0.10 = 10%), so dividing by 100 again was causing the discount to be calculated as only 0.1% instead of 10%.

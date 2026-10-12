@@ -1,0 +1,5 @@
+Fixed! The bug was in `src/shop/pricing.py`.
+
+`config.py` stores `DISCOUNT_RATE` as a **fraction** (e.g., `0.10` for 10% off), but the `apply_discount` function was treating it as a **percentage** and dividing by `100`, making the discount 100× too small.
+
+**Change:** Removed the erroneous `/ 100` from the discount calculation.

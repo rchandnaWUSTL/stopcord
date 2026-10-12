@@ -1,0 +1,3 @@
+All the modules look fine. The issue was in `pricing.py` where the discount calculation was incorrectly dividing by 100. The `DISCOUNT_RATE` is already stored as a fraction (0.10), so dividing by 100 again would make it 0.001 (0.1% instead of 10%).
+
+Fixed by removing the `/ 100` from the discount calculation in `src/shop/pricing.py`.

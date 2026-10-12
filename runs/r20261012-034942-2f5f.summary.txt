@@ -1,0 +1,10 @@
+Let me verify the logic manually:
+
+- `DISCOUNT_RATE` from config is `0.10` (10% as a fraction)
+- Before fix: `discount = 10000 * 0.10 / 100 = 10` (0.1% discount)
+- After fix: `discount = 10000 * 0.10 = 1000` (10% discount)
+- Result: `10000 - 1000 = 9000` ✓
+
+The fix is correct. The issue was that `DISCOUNT_RATE` is already stored as a fraction (0.10 = 10%), but the `apply_discount` function was incorrectly dividing by 100 again, treating it as if it were a percentage value (10).
+
+**Summary:** Fixed the failing test by removing the erroneous `/ 100` division in `src/shop/pricing.py`. The `DISCOUNT_RATE` from config is already a fraction (0.10 = 10%), so dividing by 100 was causing the discount to be calculated as 0.1% instead of 10%.

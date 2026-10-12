@@ -1,0 +1,5 @@
+Now the calculation is:
+- `discount = 10_000 * 0.10 = 1_000`
+- Result: `10_000 - 1_000 = 9_000` ✓
+
+This matches the expected behavior in the test.

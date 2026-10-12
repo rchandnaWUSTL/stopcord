@@ -1,0 +1,1 @@
+All tests pass now. The issue was in `src/shop/pricing.py` - the `apply_discount` function was incorrectly dividing `DISCOUNT_RATE` by 100, but `DISCOUNT_RATE` is already stored as a fraction (0.1 = 10%), not as a percentage number (10).

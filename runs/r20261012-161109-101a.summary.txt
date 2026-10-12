@@ -1,0 +1,3 @@
+All tests pass now. 
+
+**Summary:** Fixed the failing test by correcting a bug in `src/shop/pricing.py`. The `apply_discount` function was incorrectly dividing the discount by 100, treating `DISCOUNT_RATE` (which is already a fraction like `0.10`) as if it were a percentage. Removed the erroneous `/ 100` from the discount calculation.

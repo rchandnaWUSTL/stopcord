@@ -1,0 +1,43 @@
+# Starter policy for the quickstart. Default is deny. First match wins.
+name: quickstart
+budget: 60
+
+rules:
+  # Anything that resolves outside the workspace, after .. and symlinks.
+  - id: outside-workspace
+    match: {outside_workspace: true}
+    effect: deny
+    reason: Paths outside the workspace are off limits.
+
+  - id: env-files
+    tool: [read_file, write_file, list_dir]
+    match: {paths: [".env", ".env.*", "*.env"]}
+    effect: deny
+    reason: Environment files hold credentials.
+
+  - id: secrets
+    tool: [read_file, write_file, list_dir]
+    match: {paths: ["*secret*"]}
+    effect: deny
+    reason: Anything named like a secret.
+
+  - id: workspace-files
+    tool: [read_file, write_file, list_dir]
+    match: {paths: ["*"]}
+    effect: allow
+
+  - id: tests-and-diff
+    tool: run_command
+    match:
+      commands: ["pytest", "pytest -q", "python -m pytest", "python -m pytest -q", "git diff", "git status"]
+    effect: allow
+
+  - id: no-egress
+    tool: http_request
+    effect: deny
+    reason: No network from this workspace.
+
+  - id: no-deploy
+    tool: deploy
+    effect: deny
+    reason: Deploys need a human.

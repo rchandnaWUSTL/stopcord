@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.stopcord-work/
+dist/
+.DS_Store
+.openrouter.env

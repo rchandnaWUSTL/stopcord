@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>StopCord console</title>
+<style>
+/* Material Design 3, dark scheme, generated from a blue seed. Tokens follow md.sys.* naming. */
+:root{
+  --md-sys-color-primary:#aac7ff;--md-sys-color-on-primary:#0a305f;
+  --md-sys-color-primary-container:#284777;--md-sys-color-on-primary-container:#d6e3ff;
+  --md-sys-color-secondary-container:#3e4759;--md-sys-color-on-secondary-container:#dae2f9;
+  --md-sys-color-tertiary:#8fd6a0;--md-sys-color-tertiary-container:#145230;--md-sys-color-on-tertiary-container:#abf2bb;
+  --md-sys-color-error:#ffb4ab;--md-sys-color-on-error:#690005;
+  --md-sys-color-error-container:#93000a;--md-sys-color-on-error-container:#ffdad6;
+  --md-sys-color-surface:#111318;--md-sys-color-on-surface:#e2e2e9;--md-sys-color-on-surface-variant:#c4c6d0;
+  --md-sys-color-surface-container-low:#191c20;--md-sys-color-surface-container:#1d2024;
+  --md-sys-color-surface-container-high:#282a2f;--md-sys-color-surface-container-highest:#33353a;
+  --md-sys-color-outline:#8e9099;--md-sys-color-outline-variant:#44474e;
+  --md-sys-shape-small:8px;--md-sys-shape-medium:12px;--md-sys-shape-large:16px;--md-sys-shape-full:999px;
+  --md-ref-typeface-brand:"Google Sans","Roboto",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --md-ref-typeface-plain:"Roboto",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --md-sys-motion-easing-emphasized:cubic-bezier(.2,0,0,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);font:400 16px/1.5 var(--md-ref-typeface-plain);-webkit-font-smoothing:antialiased}
+svg.icon{width:24px;height:24px;fill:currentColor;flex:none}
+
+/* top app bar */
+.top-app-bar{display:flex;align-items:center;gap:16px;height:64px;padding:0 16px 0 24px;background:var(--md-sys-color-surface-container)}
+.top-app-bar .title{font:400 22px/28px var(--md-ref-typeface-brand)}
+.top-app-bar .run{font:500 14px/20px var(--mono);color:var(--md-sys-color-on-surface-variant)}
+.spacer{flex:1}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:var(--md-sys-shape-small);font:500 14px/20px var(--md-ref-typeface-plain);border:1px solid var(--md-sys-color-outline-variant);color:var(--md-sys-color-on-surface-variant);white-space:nowrap}
+.chip svg.icon{width:18px;height:18px}
+.chip.running{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border-color:transparent}
+.chip.ok{background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);border-color:transparent}
+.chip.error{background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);border-color:transparent}
+.chip.quiet{background:var(--md-sys-color-surface-container-high);border-color:transparent}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px 0 16px;border:0;border-radius:var(--md-sys-shape-full);font:500 14px/20px var(--md-ref-typeface-plain);letter-spacing:.1px;cursor:pointer;position:relative;overflow:hidden}
+.btn svg.icon{width:18px;height:18px}
+.btn.filled-error{background:var(--md-sys-color-error);color:var(--md-sys-color-on-error)}
+.btn::after{content:"";position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .15s}
+.btn:hover::after{opacity:.08}.btn:active::after{opacity:.12}
+.btn[disabled]{background:rgba(226,226,233,.12);color:rgba(226,226,233,.38);cursor:default}
+.btn[disabled]::after{display:none}
+
+/* layout */
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:16px 24px 24px;height:calc(100% - 64px)}
+.col{display:flex;flex-direction:column;gap:16px;min-height:0}
+.card{background:var(--md-sys-color-surface-container-low);border-radius:var(--md-sys-shape-medium);padding:20px 24px}
+.card.filled{background:var(--md-sys-color-surface-container-highest)}
+.card.outlined{background:transparent;border:1px solid var(--md-sys-color-outline-variant)}
+.overline{font:500 12px/16px var(--md-ref-typeface-plain);letter-spacing:.5px;text-transform:uppercase;color:var(--md-sys-color-on-surface-variant);margin:0 0 8px}
+.headline{font:400 24px/32px var(--md-ref-typeface-brand);margin:0}
+.body-medium{font:400 14px/20px var(--md-ref-typeface-plain);color:var(--md-sys-color-on-surface-variant)}
+
+/* banner */
+.banner{display:none;width:fit-content;max-width:calc(100% - 48px);align-items:center;gap:16px;margin:16px 24px 0;padding:16px 20px;border-radius:var(--md-sys-shape-medium);background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);font:500 16px/24px var(--md-ref-typeface-plain)}
+.banner.show{display:flex}
+body.has-banner main{height:calc(100% - 64px - 88px)}
+
+/* list */
+.list-card{flex:1;min-height:0;display:flex;flex-direction:column;padding:20px 0 8px}
+.list-card .overline{padding:0 24px}
+.list{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 56px);mask-image:linear-gradient(to bottom,transparent 0,#000 56px)}
+.item.edited{border:2px solid var(--md-sys-color-error);border-radius:var(--md-sys-shape-medium);margin:4px 12px;padding:6px 10px}
+.item.edited .trail,.item.edited .lead{color:var(--md-sys-color-error)}
+.item.untrusted{opacity:.45}
+.item{display:flex;align-items:center;gap:16px;min-height:56px;padding:8px 24px;animation:enter .35s var(--md-sys-motion-easing-emphasized)}
+@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.item .lead{color:var(--md-sys-color-on-surface-variant)}
+.item .text{flex:1;min-width:0}
+.item .headline-s{font:500 16px/24px var(--md-ref-typeface-plain)}
+.item .supporting{font:400 15px/20px var(--mono);color:var(--md-sys-color-on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item.blocked{background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);border-radius:var(--md-sys-shape-medium);margin:4px 12px;padding:8px 12px}
+.item.blocked .lead,.item.blocked .supporting{color:var(--md-sys-color-on-error-container)}
+.item .trail{font:500 14px/20px var(--md-ref-typeface-plain);color:var(--md-sys-color-on-surface-variant);white-space:nowrap}
+.empty{padding:24px;color:var(--md-sys-color-on-surface-variant)}
+
+/* counts */
+.counts{display:flex;gap:32px}
+.count b{display:block;font:400 45px/52px var(--md-ref-typeface-brand)}
+.count span{font:500 14px/20px var(--md-ref-typeface-plain);color:var(--md-sys-color-on-surface-variant)}
+.count.blocked b{color:var(--md-sys-color-error)}
+
+/* integrity */
+.integrity{display:flex;align-items:center;gap:16px}
+.integrity .badge{width:48px;height:48px;border-radius:var(--md-sys-shape-full);display:grid;place-items:center;flex:none}
+.integrity.ok .badge{background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container)}
+.integrity.bad .badge{background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container)}
+.integrity .t{font:500 18px/24px var(--md-ref-typeface-plain)}
+.integrity.bad .t{color:var(--md-sys-color-error)}
+
+/* report */
+.report{display:none}
+.report.show{display:block;animation:enter .5s var(--md-sys-motion-easing-emphasized)}
+.quote{font:400 18px/28px var(--md-ref-typeface-plain);margin:4px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;max-height:168px;overflow:hidden}
+.left-out{margin-top:16px;padding-top:16px;border-top:1px solid var(--md-sys-color-outline-variant)}
+.left-out .row{display:flex;align-items:center;gap:12px;margin-top:8px}
+.left-out .row .what{font:500 16px/24px var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.dim{color:var(--md-sys-color-on-surface-variant)}
+
+/* pointer, so recordings show where a person clicked */
+#pointer{position:fixed;left:-40px;top:-40px;width:28px;height:28px;pointer-events:none;z-index:9;transition:left .6s var(--md-sys-motion-easing-emphasized),top .6s var(--md-sys-motion-easing-emphasized);display:none}
+body.show-pointer #pointer{display:block}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+  <symbol id="i-block" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM4 12a8 8 0 0 1 12.9-6.31L5.69 16.9A7.95 7.95 0 0 1 4 12zm8 8a7.95 7.95 0 0 1-4.9-1.69L18.31 7.1A8 8 0 0 1 12 20z"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H4V8h16v10zM6 10l1.4-1.4L11.8 13l-4.4 4.4L6 16l3-3-3-3zm6 6h6v2h-6z"/></symbol>
+  <symbol id="i-public" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.9 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A8 8 0 0 1 5.08 16zm2.95-8H5.08a7.99 7.99 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38z"/></symbol>
+</svg>
+
+<header class="top-app-bar">
+  <span class="title">StopCord</span>
+  <span class="run" id="run-id"></span>
+  <span class="spacer"></span>
+  <span class="chip" id="status"></span>
+  <button class="btn filled-error" id="stop" disabled><svg class="icon"><use href="#i-stop"/></svg>Stop agent</button>
+</header>
+
+<div class="banner" id="banner"><svg class="icon"><use href="#i-stop"/></svg><span id="banner-text"></span></div>
+
+<main>
+  <section class="col">
+    <div class="card filled">
+      <p class="overline">Task given to the agent</p>
+      <p class="headline" id="task">Waiting for a run</p>
+      <p class="body-medium" id="agent" style="margin:8px 0 0"></p>
+    </div>
+    <div class="card list-card">
+      <p class="overline">Every tool call, as the gateway decided it</p>
+      <div class="list" id="list"><div class="empty">No calls yet</div></div>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="card">
+      <div class="counts">
+        <div class="count"><b id="n-total">0</b><span>tool calls</span></div>
+        <div class="count"><b id="n-allowed">0</b><span>allowed</span></div>
+        <div class="count blocked"><b id="n-blocked">0</b><span>blocked</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="integrity ok" id="integrity">
+        <div class="badge"><svg class="icon"><use href="#i-shield"/></svg></div>
+        <div><div class="t" id="integrity-t">Log intact</div><div class="body-medium" id="integrity-s"></div></div>
+      </div>
+    </div>
+    <div class="card outlined report" id="report">
+      <p class="overline">The agent's final report</p>
+      <p class="quote" id="quote"></p>
+      <div class="left-out" id="left-out"></div>
+    </div>
+  </section>
+</main>
+<svg id="pointer" viewBox="0 0 24 24"><path d="M4 2l16 10.5-7 1.5 4 7.5-3 1.5-4-7.5L4 20z" fill="#fff" stroke="#111" stroke-width="1.2"/></svg>
+
+<script>
+const TOKEN = "__CONSOLE_TOKEN__";
+const params = new URLSearchParams(location.search);
+let pinned = params.get("run");
+let current = null, lastSig = "";
+if (params.get("pointer")) document.body.classList.add("show-pointer");
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const icon = n => `<svg class="icon"><use href="#i-${n}"/></svg>`;
+const toolIcon = t => t === "run_command" ? "terminal" : t === "http_request" ? "public" : "file";
+const clock = ts => ts ? ts.slice(11, 19) + " UTC" : "";
+
+function render(s) {
+  $("run-id").textContent = s.run_id + (s.tampered_copy ? "  (edited copy)" : "");
+  const st = $("status");
+  const labels = {running: ["running", "dot", "Running"], finished: ["quiet", "check", "Finished"], halted: ["error", "stop", "Stopped"], incomplete: ["quiet", "warn", "Incomplete"]};
+  const [cls, ic, text] = labels[s.status] || labels.incomplete;
+  st.className = "chip " + cls; st.innerHTML = icon(ic) + text;
+  $("stop").disabled = s.status !== "running";
+
+  $("task").textContent = s.task ? `“${s.task}”` : "No task recorded";
+  $("agent").textContent = [s.agent && `Agent: ${s.agent}`, s.policy && `Policy: ${s.policy}`].filter(Boolean).join("   ·   ");
+
+  const list = $("list");
+  const broken = s.chain.ok ? null : s.chain.broken;
+  // When the log fails verification, show the calls around the first bad entry.
+  let shown = s.calls.slice(-9);
+  if (broken) {
+    const i = Math.max(0, s.calls.findIndex(c => c.seq >= broken));
+    shown = s.calls.slice(Math.max(0, i - 5), i + 4);
+    list.innerHTML = "";
+  }
+  if (!shown.length) list.innerHTML = '<div class="empty">No calls yet</div>';
+  else {
+    const have = new Set([...list.querySelectorAll(".item")].map(e => e.dataset.seq));
+    if ([...have].some(x => !shown.find(c => String(c.seq) === x))) list.innerHTML = "";
+    list.querySelector(".empty")?.remove();
+    for (const c of shown) {
+      let el = list.querySelector(`.item[data-seq="${c.seq}"]`);
+      if (!el) { el = document.createElement("div"); el.dataset.seq = c.seq; list.appendChild(el); }
+      const blocked = c.decision === "deny";
+      const edited = broken && c.seq === broken;
+      const untrusted = broken && c.seq > broken;
+      el.className = "item" + (edited ? " edited" : blocked ? " blocked" : "") + (untrusted ? " untrusted" : "");
+      const trail = edited ? `Says “${c.decision === "allow" ? "Allowed" : "Blocked"}”, but this entry was edited`
+        : blocked ? "Blocked · " + esc(c.rule) : (c.result === "error" ? "Allowed · failed" : "Allowed");
+      el.innerHTML = `<span class="lead">${icon(edited ? "warn" : blocked ? "block" : toolIcon(c.tool))}</span>
+        <div class="text"><div class="headline-s">${esc(c.tool)}</div><div class="supporting">${esc(c.target)}</div></div>
+        <span class="trail">${trail}</span>`;
+    }
+    while (list.children.length > 9) list.firstElementChild.remove();
+  }
+
+  $("n-total").textContent = s.counts.total;
+  $("n-allowed").textContent = s.counts.allowed;
+  $("n-blocked").textContent = s.counts.blocked;
+
+  const integ = $("integrity");
+  if (s.chain.ok) {
+    integ.className = "integrity ok";
+    integ.querySelector(".badge").innerHTML = icon("shield");
+    $("integrity-t").textContent = "Log intact";
+    $("integrity-s").textContent = `${s.chain.entries} entries, each hash-linked to the one before`;
+  } else {
+    integ.className = "integrity bad";
+    integ.querySelector(".badge").innerHTML = icon("warn");
+    $("integrity-t").textContent = `Log was edited at entry ${s.chain.broken}`;
+    $("integrity-s").textContent = "That entry no longer matches its hash. Don't trust anything from there on.";
+  }
+
+  const banner = $("banner");
+  if (s.halted) {
+    banner.classList.add("show"); document.body.classList.add("has-banner");
+    const how = {console: "from this console", tail: "from stopcord tail", cli: "with stopcord kill"}[s.halted.via] || `via ${s.halted.via}`;
+    $("banner-text").textContent = `Stopped ${how} at ${clock(s.halted.ts)}. The agent's access was revoked mid-task.`;
+  } else { banner.classList.remove("show"); document.body.classList.remove("has-banner"); }
+
+  const rep = $("report");
+  if (s.summary != null && !s.chain.ok) {
+    rep.classList.add("show");
+    $("quote").textContent = s.summary.trim();
+    $("left-out").innerHTML = '<div class="body-medium">No comparison: the log failed verification, so it can\'t be used as evidence.</div>';
+  } else if (s.summary != null) {
+    rep.classList.add("show");
+    $("quote").textContent = s.summary.trim();
+    const missing = s.left_out.filter(x => !x.mentioned);
+    const lo = $("left-out");
+    if (!s.left_out.length) lo.innerHTML = '<div class="body-medium">Nothing was blocked during this run.</div>';
+    else if (!missing.length) lo.innerHTML = '<div class="body-medium">The report mentions every blocked call.</div>';
+    else {
+      // Calls blocked by a named rule get their own line; calls that only missed the allowlist are counted.
+      const named = missing.filter(x => x.rule !== "default-deny");
+      const other = missing.length - named.length;
+      lo.innerHTML = `<p class="overline" style="color:var(--md-sys-color-error)">Blocked calls the report doesn't mention</p>` +
+        named.map(x => `<div class="row"><span class="chip error">${icon("block")}${esc(x.tool)}</span><span class="what">${esc(x.target)}</span></div>`).join("") +
+        (other ? `<div class="row body-medium">${named.length ? "and " : ""}${other} command${other > 1 ? "s" : ""} not on the allowlist</div>` : "");
+    }
+  } else rep.classList.remove("show");
+}
+
+async function tick() {
+  try {
+    if (!pinned) {
+      const l = await (await fetch("/api/latest")).json();
+      if (l.run_id && l.run_id !== current) { current = l.run_id; $("list").innerHTML = ""; }
+    } else current = pinned;
+    if (current) {
+      const r = await fetch(`/api/runs/${encodeURIComponent(current)}`);
+      if (r.ok) { const s = await r.json(); const sig = JSON.stringify(s); if (sig !== lastSig) { lastSig = sig; render(s); } }
+    }
+  } catch (e) {}
+  setTimeout(tick, 300);
+}
+
+$("stop").addEventListener("click", async () => {
+  if (!current) return;
+  $("stop").disabled = true;
+  await fetch(`/api/runs/${encodeURIComponent(current)}/stop`, {method: "POST", headers: {"x-console-token": TOKEN}});
+});
+document.addEventListener("mousemove", e => { const p = $("pointer"); p.style.left = e.clientX - 4 + "px"; p.style.top = e.clientY - 2 + "px"; });
+tick();
+</script>
+</body>
+</html>

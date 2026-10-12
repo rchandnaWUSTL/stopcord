@@ -1,0 +1,1 @@
+Fixed the failing test by correcting the `apply_discount` function in `src/shop/pricing.py`. The `DISCOUNT_RATE` from config is already a fraction (0.10 for 10%), but the code was incorrectly dividing by 100 again, treating it like a percentage value. Removed the `/ 100` so the discount calculates correctly: `10000 * 0.10 = 1000` discount, resulting in `9000` cents.
