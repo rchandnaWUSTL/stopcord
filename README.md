@@ -1,6 +1,6 @@
 # StopCord
 
-A containment layer for AI agents: a policy gate in front of every tool call, a log the agent can't quietly edit, and a stop switch.
+Set limits on what your AI agent can do, and see what it actually did. StopCord sits between the agent and your files, commands and network, blocks what your rules don't allow, and keeps a record you can verify.
 
 [![CI](https://github.com/rchandnaWUSTL/stopcord/actions/workflows/ci.yml/badge.svg)](https://github.com/rchandnaWUSTL/stopcord/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -10,7 +10,7 @@ A containment layer for AI agents: a policy gate in front of every tool call, a 
 ## Try it
 
 ```
-uvx --from git+https://github.com/rchandnaWUSTL/stopcord stopcord demo
+uvx --from git+https://github.com/rchandnaWUSTL/stopcord@v0.1.0 stopcord demo
 ```
 
 About 15 seconds, no API key, no network. A scripted agent fixes a failing test, tries to read `.env`, and tries to upload it. Both are blocked. You get a log in `runs/`, a verification line, and a report that puts the agent's summary next to what the log shows.
@@ -19,27 +19,27 @@ Then change one byte of that log and run `stopcord verify` on it.
 
 ## What it does
 
-- **Gate.** Every tool call is decided by plain code against `policy.yaml`. Default deny, first match wins, paths resolved before matching. No model in the path.
-- **Log.** The gateway writes a hash-chained JSONL file per run. `stopcord verify` names the first entry that changed.
-- **Stop.** `stopcord kill`, the console's Stop button, or K in `stopcord tail` revokes the agent's access mid-task.
-- **Report.** `stopcord report` lists blocked calls the agent's summary doesn't mention.
+- Every tool call is checked against the rules in `policy.yaml` before it runs. Ordinary code makes the decision, not a model. Anything the rules don't allow is blocked.
+- Every attempt goes into a log where each entry is linked to the one before it. `stopcord verify` names the first entry that changed.
+- `stopcord kill`, the console's Stop button, or K in `stopcord tail` cuts off the agent's access mid-task.
+- `stopcord report` lists blocked calls the agent's summary doesn't mention.
 
 ## What it doesn't do
 
 This makes an agent's actions observable and containable. It does not make the agent aligned, and it does not stop harm inside what the policy allows.
 
-The log is tamper-evident, not tamper-proof: an edit anywhere fails verification at that entry, but someone who controls the machine can rewrite the whole file. Details in [THREAT_MODEL.md](THREAT_MODEL.md).
+The log is tamper-evident, not tamper-proof. Editing any entry makes verification fail at that entry, but someone who controls the machine can rewrite the whole file. Details in [THREAT_MODEL.md](THREAT_MODEL.md).
 
 ## Use it with your agent
 
-Point any MCP client (Claude Code, Cursor, Claude Desktop) at the gateway:
+Point any MCP client at the gateway: <img src="landing/assets/logos/claude.svg" width="16" height="16" alt=""> Claude Code · <img src="landing/assets/logos/cursor.svg" width="16" height="16" alt=""> Cursor · <img src="landing/assets/logos/googlegemini.svg" width="16" height="16" alt=""> Gemini CLI · <img src="landing/assets/logos/githubcopilot.svg" width="16" height="16" alt=""> Copilot · <img src="landing/assets/logos/windsurf.svg" width="16" height="16" alt=""> Windsurf.
 
 ```json
 {
   "mcpServers": {
     "stopcord": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/rchandnaWUSTL/stopcord",
+      "args": ["--from", "git+https://github.com/rchandnaWUSTL/stopcord@v0.1.0",
                "stopcord", "gateway",
                "--policy", "/abs/path/policy.yaml",
                "--workspace", "/abs/path/repo"]
