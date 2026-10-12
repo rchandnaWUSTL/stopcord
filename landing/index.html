@@ -7,7 +7,7 @@
 <meta name="description" content="StopCord sits between your AI agent and your files, commands and network. It blocks anything your rules don't allow, records every attempt, and lets you stop the agent at any time. Open source.">
 <meta property="og:title" content="StopCord: see what your AI agent actually did">
 <meta property="og:description" content="Block what your rules don't allow, record every attempt, stop the agent at any time. Open source, runs on your machine.">
-<meta property="og:image" content="assets/poster.jpg">
+<meta property="og:image" content="assets/report-light.png">
 <meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,11 +85,6 @@ strong.hl{font-weight:600}
 .works .label-l{color:var(--md-sys-color-on-surface-variant);font-weight:400}
 .works span.brand-item{display:inline-flex;align-items:center;gap:8px;font:500 15px/1 var(--brand)}
 .inline-logo{width:1em;height:1em;vertical-align:-.12em;margin-right:.2em}
-.media{position:relative;border-radius:var(--shape-xl);overflow:hidden;background:#111318;aspect-ratio:16/9;align-self:center;display:flex}
-.media video{width:100%;height:100%;object-fit:contain;display:block}
-.media .play{position:absolute;left:20px;bottom:20px;display:inline-flex;align-items:center;gap:8px;height:56px;padding:0 24px 0 18px;border:0;border-radius:var(--shape-full);background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);font:500 17px/1 var(--brand);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
-.media.playing .play{display:none}
-.media.playing video{object-fit:contain}
 
 section{padding:96px 0 0}
 .section-intro{max-width:760px;margin-bottom:40px}
@@ -207,12 +202,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-bet
           <span class="brand-item"><img class="logo" src="assets/logos/windsurf.svg" alt="" width="20" height="20">Windsurf</span>
         </div>
       </div>
-    </div>
-    <div class="media" id="media">
-      <video id="demo" preload="metadata" playsinline muted poster="assets/poster.jpg" aria-label="Screen recording of the StopCord console during a real agent run. The agent's attempt to read the .env secrets file is blocked, its final report doesn't mention it, an edit to the saved record is detected, and a second run is stopped mid-task.">
-        <source src="assets/demo.mp4" type="video/mp4">
-      </video>
-      <button class="play" aria-label="Play the demo"><span class="ms fill">play_arrow</span>Watch a run</button>
     </div>
   </div>
 </div>
@@ -365,8 +354,6 @@ document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click"
   try { await navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent); } catch (e) {}
   const s = document.getElementById("snack"); s.classList.add("show"); setTimeout(() => s.classList.remove("show"), 1600);
 }));
-const media = document.getElementById("media"), v = document.getElementById("demo");
-media.querySelector(".play").addEventListener("click", () => { v.controls = true; v.play(); media.classList.add("playing"); });
 </script>
 </body>
 </html>
