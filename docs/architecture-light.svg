@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 470" role="img" aria-label="The agent reaches tools only through the gateway. The gateway checks the session token, decides each call with plain code, writes the log, and forwards allowed calls to a separate tools process. A person can kill the run through a control socket. Verify, replay and report read only the log and the agent's summary." font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#44474e"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ba1a1a"/>
+    </marker>
+  </defs>
+  <rect width="1120" height="470" rx="16" fill="#f9f9ff"/>
+
+  <!-- outside the model -->
+  <rect x="300" y="40" width="520" height="390" rx="14" fill="#eef4fb" stroke="#9fb9cf" stroke-dasharray="6 5"/>
+  <text x="560" y="68" text-anchor="middle" fill="#3b5f90" font-size="14" font-weight="600" letter-spacing="1">OUTSIDE THE MODEL · PLAIN CODE</text>
+
+  <!-- agent -->
+  <rect x="40" y="130" width="200" height="110" rx="12" fill="#ffffff" stroke="#c4c6d0"/>
+  <text x="140" y="172" text-anchor="middle" fill="#191c20" font-size="18" font-weight="600">Agent</text>
+  <text x="140" y="196" text-anchor="middle" fill="#5d6068" font-size="13">model + tool loop</text>
+  <text x="140" y="216" text-anchor="middle" fill="#5d6068" font-size="13">holds a session token only</text>
+
+  <!-- gateway -->
+  <rect x="340" y="100" width="260" height="170" rx="12" fill="#ffffff" stroke="#3b5f90"/>
+  <text x="470" y="132" text-anchor="middle" fill="#191c20" font-size="18" font-weight="600">Gateway (MCP)</text>
+  <text x="362" y="164" fill="#44474e" font-size="14">1. check token</text>
+  <text x="362" y="190" fill="#44474e" font-size="14">2. normalize path, run decide()</text>
+  <text x="362" y="216" fill="#44474e" font-size="14">3. log request and decision</text>
+  <text x="362" y="242" fill="#44474e" font-size="14">4. forward, or deny with rule id</text>
+
+  <!-- policy -->
+  <rect x="640" y="100" width="150" height="60" rx="10" fill="#ffffff" stroke="#c4c6d0"/>
+  <text x="715" y="127" text-anchor="middle" fill="#191c20" font-size="15" font-weight="600">policy.yaml</text>
+  <text x="715" y="147" text-anchor="middle" fill="#5d6068" font-size="12">default deny</text>
+
+  <!-- log -->
+  <rect x="340" y="320" width="260" height="80" rx="10" fill="#ffffff" stroke="#c4c6d0"/>
+  <text x="470" y="352" text-anchor="middle" fill="#191c20" font-size="15" font-weight="600">runs/&lt;id&gt;.jsonl</text>
+  <text x="470" y="374" text-anchor="middle" fill="#5d6068" font-size="12">hash-chained, written only by the gateway</text>
+
+  <!-- control -->
+  <rect x="640" y="320" width="150" height="80" rx="10" fill="#ffffff" stroke="#ba1a1a"/>
+  <text x="715" y="352" text-anchor="middle" fill="#191c20" font-size="15" font-weight="600">control socket</text>
+  <text x="715" y="374" text-anchor="middle" fill="#5d6068" font-size="12">kill: revoke token</text>
+
+  <!-- tools -->
+  <rect x="880" y="130" width="200" height="110" rx="12" fill="#ffffff" stroke="#c4c6d0"/>
+  <text x="980" y="172" text-anchor="middle" fill="#191c20" font-size="18" font-weight="600">Tools process</text>
+  <text x="980" y="196" text-anchor="middle" fill="#5d6068" font-size="13">files, commands, http</text>
+  <text x="980" y="216" text-anchor="middle" fill="#5d6068" font-size="13">acts on the workspace</text>
+
+  <!-- you -->
+  <rect x="880" y="320" width="200" height="80" rx="12" fill="#ffffff" stroke="#c4c6d0"/>
+  <text x="980" y="352" text-anchor="middle" fill="#191c20" font-size="16" font-weight="600">You</text>
+  <text x="980" y="374" text-anchor="middle" fill="#5d6068" font-size="12">stopcord kill, Stop, or K</text>
+
+  <!-- arrows -->
+  <line x1="240" y1="175" x2="336" y2="175" stroke="#74777f" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="288" y="164" text-anchor="middle" fill="#44474e" font-size="12">tool call</text>
+  <line x1="338" y1="215" x2="244" y2="215" stroke="#74777f" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="288" y="234" text-anchor="middle" fill="#44474e" font-size="12">result or denial</text>
+
+  <line x1="600" y1="200" x2="876" y2="200" stroke="#74777f" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="738" y="192" text-anchor="middle" fill="#44474e" font-size="12">allowed calls only</text>
+
+  <line x1="640" y1="130" x2="604" y2="130" stroke="#74777f" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <line x1="470" y1="270" x2="470" y2="316" stroke="#74777f" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="480" y="298" fill="#44474e" font-size="12">appends</text>
+
+  <line x1="880" y1="360" x2="794" y2="360" stroke="#ba1a1a" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <line x1="680" y1="320" x2="590" y2="272" stroke="#ba1a1a" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <text x="664" y="290" fill="#ba1a1a" font-size="12">halt</text>
+
+  <!-- later -->
+  <text x="40" y="352" fill="#191c20" font-size="15" font-weight="600">Later: verify, replay, report</text>
+  <text x="40" y="374" fill="#5d6068" font-size="12">read the log and the agent's summary.</text>
+  <text x="40" y="392" fill="#5d6068" font-size="12">No model anywhere in this path.</text>
+  <line x1="336" y1="362" x2="262" y2="362" stroke="#74777f" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+</svg>
